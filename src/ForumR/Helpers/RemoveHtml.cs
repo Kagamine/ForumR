@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace CodeComb.vNextChina.Helpers
+namespace ForumR.Helpers
 {
     public static class RemoveHtml
     {

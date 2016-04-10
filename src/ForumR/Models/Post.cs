@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using CodeComb.Marked;
 
 namespace ForumR.Models
 {
@@ -23,7 +24,7 @@ namespace ForumR.Models
         {
             get
             {
-                var ret = Helpers.RemoveHtml.Remove(Marked.Marked.Parse(Content));
+                var ret = Helpers.RemoveHtml.Remove(Marked.Parse(Content));
                 if (ret.Length > 100)
                     ret = ret.Substring(0, 100);
                 return ret;

@@ -35,8 +35,7 @@ namespace ForumR
             services.AddFileUpload()
                 .AddEntityFrameworkStorage<ForumContext>();
 
-            services.AddMvc()
-                .AddTemplate();
+            services.AddMvc();
 
             services.AddSignalR();
             services.AddAntiXss();
@@ -48,8 +47,8 @@ namespace ForumR
             app.UseIdentity();
             app.UseStaticFiles();
             app.UseSignalR();
-            app.UseAutoAjax("/assets/shared/scripts/jquery.autoajax.js");
-            app.UseFileUpload("/assets/shared/scripts/jquery.fileupload.js");
+            app.UseAutoAjax();
+            app.UseFileUpload();
             app.UseMvcWithDefaultRoute();
         }
 

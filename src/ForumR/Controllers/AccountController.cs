@@ -7,9 +7,10 @@ using System.Net;
 using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.Http;
 using Microsoft.AspNet.Authorization;
-using CodeComb.vNextChina.Models;
+using Microsoft.Data.Entity;
+using ForumR.Models;
 
-namespace CodeComb.vNextChina.Controllers
+namespace ForumR.Controllers
 {
     public class AccountController : BaseController
     {
@@ -295,7 +296,9 @@ namespace CodeComb.vNextChina.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(long id, IFormFile avatar, User Model)
         {
-            var user = DB.Users.Where(x => x.Id == id).SingleOrDefault();
+            var user = DB.Users
+                .Include(x => x.Avatar)
+                .Where(x => x.Id == id).SingleOrDefault();
             if (user == null)
                 return Prompt(x =>
                 {
@@ -320,32 +323,25 @@ namespace CodeComb.vNextChina.Controllers
                 });
             if (avatar != null)
             {
-                user.Avatar = await avatar.ReadAllBytesAsync();
-                user.AvatarContentType = avatar.ContentType;
+                DB.Files.Remove(user.Avatar);
+                var file = new CodeComb.AspNet.Upload.Models.File
+                {
+                    Bytes = await avatar.ReadAllBytesAsync(),
+                    ContentLength = avatar.Length,
+                    ContentType = avatar.ContentType,
+                    FileName = avatar.GetFileName(),
+                    Time = DateTime.Now
+                };
+                DB.Files.Add(file);
+                user.AvatarId = file.Id;
             }
             user.Motto = Model.Motto;
-            user.WebSite = Model.WebSite;
-            user.Organization = Model.Organization;
             DB.SaveChanges();
             return Prompt(x =>
             {
                 x.Title = "修改成功";
                 x.Details = "用户资料已经保存成功！";
             });
-        }
-
-        [HttpGet]
-        public IActionResult Avatar(long id)
-        {
-            var user = DB.Users.Where(x => x.Id == id).SingleOrDefault();
-            if (user == null || user.Avatar == null)
-            {
-                return File(System.IO.File.ReadAllBytes(WebRoot + "/images/NoAvatar.png"), "image/x-png");
-            }
-            else
-            {
-                return File(user.Avatar, user.AvatarContentType);
-            }
         }
 
         [HttpGet]

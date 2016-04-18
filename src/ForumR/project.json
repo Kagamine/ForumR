@@ -18,7 +18,9 @@
     "CodeComb.AspNet.Extensions": "2.0.0-rc1-final-3",
     "CodeComb.AspNet.Upload": "2.0.0-rc1-final-2",
     "CodeComb.AspNet.AntiXSS": "2.0.0-rc1-final",
-    "CodeComb.Marked": "2.0.0-rc1-final"
+    "CodeComb.Security.Aes": "2.0.0-rc1-final",
+    "CodeComb.Marked": "2.0.0-rc1-final",
+    "CodeComb.Net.EmailSender": "2.0.0-rc1-final"
   },
 
   "commands": {

@@ -31,20 +31,6 @@
                         <td class="row-title">Email</td>
                         <td>@Model.Email.Replace("@", "#")</td>
                     </tr>
-                    @if (!string.IsNullOrEmpty(Model.Organization))
-                    {
-                        <tr>
-                            <td class="row-title">组织</td>
-                            <td>@Model.Organization</td>
-                        </tr>
-                    }
-                    @if (!string.IsNullOrEmpty(Model.WebSite))
-                    {
-                        <tr>
-                            <td class="row-title">网站</td>
-                            <td><a href="@Model.WebSite" target="_blank">@Model.WebSite</a></td>
-                        </tr>
-                    }
                     <tr>
                         <td class="row-title">注册时间</td>
                         <td>@Model.RegisteryTime.ToString("yyyy-MM-dd HH:mm:ss")</td>

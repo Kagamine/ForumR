@@ -61,7 +61,7 @@ namespace ForumR.Controllers
             var aes_email = Aes.Encrypt(email);
             //var url = Url.Link("default", new { action = "RegisterDetail", controller = "Account", key = aes_email });
             var url = $"http://vnextcn.org/Account/RegisterDetail?key={WebUtility.UrlEncode(aes_email)}";
-            await Mail.SendEmailAsync(email, "vNext China 新用户注册验证信", $@"<html>
+            await Mail.SendEmailAsync(email, "ForumR 新用户注册验证信", $@"<html>
             <head></head>
             <body>
             <p><a href=""{url}"">点击继续注册</a></p>
@@ -120,7 +120,7 @@ namespace ForumR.Controllers
                 return Prompt(x =>
                 {
                     x.Title = "注册成功";
-                    x.Details = "现在您可以使用这个帐号登录vNext China了！";
+                    x.Details = "现在您可以使用这个帐号登录ForumR了！";
                     x.RedirectText = "现在登录";
                     x.RedirectUrl = Url.Action("Login", "Account");
                 });
@@ -156,7 +156,7 @@ namespace ForumR.Controllers
             var aes_email = Aes.Encrypt(email);
             //var url = Url.Link("default", new { action = "ForgotDetail", controller = "Account", key = aes_email });
             var url = $"http://vnextcn.org/Account/ForgotDetail?key={WebUtility.UrlEncode(aes_email)}";
-            await Mail.SendEmailAsync(email, "vNext China  密码找回验证信", $@"<html>
+            await Mail.SendEmailAsync(email, "ForumR  密码找回验证信", $@"<html>
             <head></head>
             <body>
             <p><a href=""{url}"">点击继续完成找回密码</a></p>
@@ -218,7 +218,7 @@ namespace ForumR.Controllers
                 return Prompt(x =>
                 {
                     x.Title = "密码重置成功";
-                    x.Details = "现在您可以使用这个帐号登录vNext China了！";
+                    x.Details = "现在您可以使用这个帐号登录ForumR了！";
                     x.RedirectText = "现在登录";
                     x.RedirectUrl = Url.Action("Login", "Account");
                 });

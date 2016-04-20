@@ -14,7 +14,7 @@ namespace ForumR.Models
         public DateTime RegisteryTime { get; set; }
 
         [ForeignKey("Avatar")]
-        public Guid AvatarId { get; set; }
+        public Guid? AvatarId { get; set; }
 
         public virtual File Avatar { get; set; }
 

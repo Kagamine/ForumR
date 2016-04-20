@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNet.Mvc;
+﻿using System;
+using System.Linq;
+using Microsoft.AspNet.Mvc;
 using Microsoft.AspNet.SignalR;
 using CodeComb.Net.EmailSender;
 using CodeComb.Security.Aes;
@@ -9,6 +11,16 @@ namespace ForumR.Controllers
 {
     public class BaseController : BaseController<ForumContext, User, long>
     {
+        public override void Prepare()
+        {
+            base.Prepare();
+            ViewBag.Announcements = DB.Threads
+                .Where(x => x.IsAnnouncement)
+                .OrderByDescending(x => x.CreationTime)
+                .Take(5)
+                .ToList();
+        }
+
         [FromServices]
         public IHubContext<ForumHub> ForumHub { get; set; }
 

@@ -7,8 +7,12 @@
         <div class="card card-single card-error">
             <div class="error-block-inner">
                 <h3>@ViewBag.Title</h3>
-                <form asp-action="EditForum" asp-controller="Admin" asp-route-id="@Model.Id">
+                <form asp-action="CreateForum" asp-controller="Admin">
                     <input type="hidden" name="parentid" value="@Context.Request.Query["parent"]" />
+                    <p>
+                        <span class="texthold">板块标识</span>
+                        <input type="text" class="textbox w-3" name="Id" placeholder="a-z A-Z 0-9 - _" />
+                    </p>
                     <p>
                         <span class="texthold">板块名称</span>
                         <input type="text" class="textbox w-3" name="Title" />

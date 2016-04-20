@@ -16,9 +16,10 @@ namespace ForumR.Models
             if (DB.Database.EnsureCreated())
             {
                 await RoleManager.CreateAsync(new IdentityRole<long>("Root"));
+                await RoleManager.CreateAsync(new IdentityRole<long>("Master"));
                 await RoleManager.CreateAsync(new IdentityRole<long>("Member"));
 
-                var user = new User { UserName = "root" };
+                var user = new User { UserName = "root", Email = "someone@somedomain.com" };
                 await UserManager.CreateAsync(user, "123456");
                 await UserManager.AddToRoleAsync(user, "Root");
 

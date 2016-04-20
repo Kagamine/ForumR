@@ -64,7 +64,8 @@ namespace ForumR.Controllers
                 .Include(x => x.Posts)
                 .Where(x => x.ForumId == id && !x.IsAnnouncement)
                 .OrderByDescending(x => x.IsTop)
-                .ThenByDescending(x => x.LastReplyTime);
+                .ThenByDescending(x => x.LastReplyTime)
+                .ToList();
             foreach (var x in ret)
             {
                 x.LastPost = DB.Posts

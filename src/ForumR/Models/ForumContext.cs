@@ -12,9 +12,14 @@ namespace ForumR.Models
     public class ForumContext : IdentityDbContext<User, IdentityRole<long>, long>, IFileUploadDbContext
     {
         public DbSet<Forum> Forums { get; set; }
+
         public DbSet<Thread> Threads { get; set; }
+
         public DbSet<Post> Posts { get; set; }
+
         public DbSet<File> Files { get; set; }
+
+        public DbSet<Message> Messages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -39,6 +44,11 @@ namespace ForumR.Models
             {
                 e.Property(x => x.ParentId).IsRequired(false);
                 e.HasIndex(x => x.PRI);
+            });
+
+            builder.Entity<Message>(e =>
+            {
+                e.HasIndex(x => x.Time);
             });
         }
     }

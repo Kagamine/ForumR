@@ -60,7 +60,7 @@ namespace ForumR.Controllers
             // 发送激活信
             var aes_email = Aes.Encrypt(email);
             //var url = Url.Link("default", new { action = "RegisterDetail", controller = "Account", key = aes_email });
-            var url = $"http://vnextcn.org/Account/RegisterDetail?key={WebUtility.UrlEncode(aes_email)}";
+            var url = $"http://localhost:5000/Account/RegisterDetail?key={WebUtility.UrlEncode(aes_email)}";
             await Mail.SendEmailAsync(email, "ForumR 新用户注册验证信", $@"<html>
             <head></head>
             <body>
@@ -155,7 +155,7 @@ namespace ForumR.Controllers
             // 发送激活信
             var aes_email = Aes.Encrypt(email);
             //var url = Url.Link("default", new { action = "ForgotDetail", controller = "Account", key = aes_email });
-            var url = $"http://vnextcn.org/Account/ForgotDetail?key={WebUtility.UrlEncode(aes_email)}";
+            var url = $"http://localhost:5000/Account/ForgotDetail?key={WebUtility.UrlEncode(aes_email)}";
             await Mail.SendEmailAsync(email, "ForumR  密码找回验证信", $@"<html>
             <head></head>
             <body>
@@ -323,7 +323,11 @@ namespace ForumR.Controllers
                 });
             if (avatar != null)
             {
-                DB.Files.Remove(user.Avatar);
+                try
+                {
+                    DB.Files.Remove(DB.Files.Single(x => x.Id == user.AvatarId));
+                }
+                catch { }
                 var file = new CodeComb.AspNet.Upload.Models.File
                 {
                     Bytes = await avatar.ReadAllBytesAsync(),
@@ -437,6 +441,62 @@ namespace ForumR.Controllers
             {
                 x.Title = "修改成功";
                 x.Details = "新密码已生效！";
+            });
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> Message(long id, int p = 0)
+        {
+            var user = await UserManager.FindByIdAsync(id.ToString());
+            ViewBag.Messages = DB.Messages
+                .Include(x => x.Sender)
+                .Where(x => x.ReceiverId == User.Current.Id)
+                .OrderByDescending(x => x.Time)
+                .Skip(10 * p)
+                .Take(10)
+                .ToList();
+            if (p > 0 && ViewBag.Messages.Count == 0)
+                return Prompt(x => 
+                {
+                    x.Title = "提示信息";
+                    x.Details = "没有更多的站内信了！";
+                });
+            return View(user);
+        }
+
+        [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> SendMessage(long id)
+        {
+            var user = await UserManager.FindByIdAsync(id.ToString());
+            return View(user);
+        }
+
+        [HttpPost]
+        [Authorize]
+        [ValidateAntiForgeryToken]
+        public IActionResult SendMessage(string receiver, string content)
+        {
+            var recv = DB.Users.SingleOrDefault(x => x.UserName == receiver);
+            if (recv == null)
+                return Prompt(x =>
+                {
+                    x.Title = "发送失败";
+                    x.Details = $"没有找到用户{receiver}";
+                });
+            DB.Messages.Add(new Message
+            {
+                SenderId = User.Current.Id,
+                ReceiverId = recv.Id,
+                Time = DateTime.Now,
+                Content = content
+            });
+            DB.SaveChanges();
+            return Prompt(x =>
+            {
+                x.Title = "发送成功";
+                x.Details = $"您的站内信已经成功发送至{recv.UserName}";
             });
         }
     }

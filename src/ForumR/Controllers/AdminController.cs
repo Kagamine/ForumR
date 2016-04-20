@@ -56,15 +56,37 @@ namespace ForumR.Controllers
         [HttpPost]
         [AnyRoles("Root")]
         [ValidateAntiForgeryToken]
-        public IActionResult CreateForum(string parentid, string title, int pri)
+        public IActionResult CreateForum(string parentid, string title, int pri, string id)
         {
-            var forum = new Forum { ParentId = parentid, Title = title, PRI = pri };
+            if (DB.Forums.SingleOrDefault(x => x.Id == id) != null)
+                return Prompt(x =>
+                {
+                    x.Title = "创建失败";
+                    x.Details = "板块标识已经存在，请返回修改后重试！";
+                });
+            var forum = new Forum { ParentId = parentid, Title = title, PRI = pri, Id = id };
             DB.Forums.Add(forum);
             DB.SaveChanges();
             return Prompt(x =>
             {
                 x.Title = "创建成功";
                 x.Details = "新的论坛版块已经创建成功";
+                x.RedirectText = "返回论坛版块管理";
+                x.RedirectUrl = Url.Action("Forum", "Admin");
+            });
+        }
+
+        [AnyRoles("Root")]
+        public IActionResult DeleteForum(string id)
+        {
+            var forum = DB.Forums.Where(x => x.Id == id).Single();
+            DB.Forums.Remove(forum);
+            DB.SaveChanges();
+            return Prompt(x =>
+            {
+                x.Title = "删除成功";
+                x.Details = "板块已经成功删除";
+                x.HideBack = true;
                 x.RedirectText = "返回论坛版块管理";
                 x.RedirectUrl = Url.Action("Forum", "Admin");
             });
